@@ -556,11 +556,24 @@ DialogSet::dispatch(const SipMessage& msg)
             }
             else if (request.header(h_To).exists(p_tag))
             {
-                // We have a To tag, but don't have an existing dialog, we shouldn't be creating a new one, reject
-                auto response = std::make_shared<SipMessage>();
-                mDum.makeResponse(*response, msg, 481);
-                mDum.send(std::move(response));
-                return;
+               Data toTag = request.header(h_To).param(p_tag);
+               Data fromTag = getCreator()->getLastRequest()->header(h_From).exists(p_tag) ?
+                              getCreator()->getLastRequest()->header(h_From).param(p_tag) : Data::Empty;
+
+               // When we receive a Notify after a initial Subscribe, treat is as implied 200OK
+               if (!fromTag.empty() && toTag == fromTag && mState == Initial)
+               {
+                  mState = Established;
+                  dialog = new Dialog(mDum, request, *this);
+               }
+               else
+               {
+                  // We have a To tag, but don't have an existing dialog, we shouldn't be creating a new one, reject
+                  auto response = std::make_shared<SipMessage>();
+                  mDum.makeResponse(*response, msg, 481);
+                  mDum.send(std::move(response));
+                  return;
+               }
             }
             else // no to tag - unsolicited notify
             {
