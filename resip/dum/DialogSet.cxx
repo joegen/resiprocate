@@ -560,8 +560,8 @@ DialogSet::dispatch(const SipMessage& msg)
                Data fromTag = getCreator()->getLastRequest()->header(h_From).exists(p_tag) ?
                               getCreator()->getLastRequest()->header(h_From).param(p_tag) : Data::Empty;
 
-               // When we receive a Notify after a initial Subscribe, treat is as implied 200OK
-               if (!fromTag.empty() && toTag == fromTag && mState == Initial)
+               // When we receive a Notify after a initial Subscribe(with or without 100 Trying received), treat is as implied 200OK
+               if (!fromTag.empty() && toTag == fromTag && (mState == Initial || mState == ReceivedProvisional))
                {
                   mState = Established;
                   dialog = new Dialog(mDum, request, *this);
