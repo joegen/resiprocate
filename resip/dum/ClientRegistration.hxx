@@ -73,6 +73,7 @@ class ClientRegistration: public NonDialogUsage
       void removeMyBindingsCommand(bool stopRegisteringWhenDone=false);
       virtual void endCommand();
 
+      void setAlwaysCallOnSuccess(bool alwaysCallOnSuccess) { mAlwaysCallOnSuccess = alwaysCallOnSuccess; }
 
       void dispatch(const SipMessage& msg) override;
       void dispatch(const DumTimeout& timer) override;
@@ -119,6 +120,7 @@ class ClientRegistration: public NonDialogUsage
       bool mEnding;
       bool mEndWhenDone;
       bool mUserRefresh;
+      bool mAlwaysCallOnSuccess {false};
       uint32_t mRegistrationTime;
       uint64_t mExpires;
       uint64_t mRefreshTime;

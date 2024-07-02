@@ -587,7 +587,7 @@ ClientRegistration::dispatch(const SipMessage& msg)
                mState = Registered;
                if(expiry != 0)
                {
-                  if(mUserRefresh)
+                  if(mUserRefresh || mAlwaysCallOnSuccess)
                   {
                       mUserRefresh = false;
                       mDum.mClientRegistrationHandler->onSuccess(getHandle(), msg);
