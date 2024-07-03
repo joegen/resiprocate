@@ -117,14 +117,14 @@ BaseCreator::makeInitialRequest(const NameAddr& target, const NameAddr& from, Me
       }
       mLastRequest->header(h_Contacts).push_front(contact);
 
-      if (method != REGISTER)
-      {
+      //if (method != REGISTER)
+      //{
          const NameAddrs& sRoute = mUserProfile->getServiceRoute();
          if (!sRoute.empty())
          {
             mLastRequest->header(h_Routes) = sRoute;
          }
-      }
+      //}
    }
 
    if(mUserProfile->clientOutboundEnabled() && method != REGISTER)
