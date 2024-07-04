@@ -3,6 +3,7 @@
 
 #include <iosfwd>
 #include <set>
+#include <map>
 #include "resip/stack/Headers.hxx"
 #include "resip/stack/MethodTypes.hxx"
 #include "resip/stack/MessageDecorator.hxx"
@@ -246,7 +247,20 @@ class Profile
       virtual bool getHandleInviteSession491AsGeneralFailureEnabled() const;
       virtual void unsetHandleInviteSession491AsGeneralFailureEnabled();
 
+      using IntProperties = std::map<std::string, int>;
+      using StringProperties = std::map<std::string, std::string>;
+
+      void setIntProperty(const std::string& name, int value) { mIntProperties[name] = value; }
+      int getIntProperty(const std::string& name) const { return mIntProperties.at(name); }
+      bool hasIntProperty(const std::string& name) const { return mIntProperties.find(name) != mIntProperties.end(); }
+
+      void setStringProperty(const std::string& name, const std::string& value) { mStringProperties[name] = value; }
+      const std::string& getStringProperty(const std::string& name) const { return mStringProperties.at(name); }
+      bool hasStringProperty(const std::string& name) const { return mStringProperties.find(name) != mStringProperties.end(); }
    private:
+      IntProperties mIntProperties;
+      StringProperties mStringProperties;
+
       bool mHasDefaultRegistrationExpires;
       uint32_t mDefaultRegistrationExpires;
       

@@ -5,6 +5,7 @@
 #include <set>
 #include <map>
 #include <utility>
+#include <functional>
 
 #include "resip/stack/Headers.hxx"
 #include "resip/dum/EventDispatcher.hxx"
@@ -368,7 +369,16 @@ class DialogUsageManager : public HandleManager, public TransactionUser
 
       void setAdvertisedCapabilities(SipMessage& msg, const std::shared_ptr<UserProfile>& userProfile);
 
+      void setMessagePostCreationCallback(std::function<void(SipMessage&, const std::shared_ptr<UserProfile>&)> callback) { mMessagePostCreationCallback = callback; }
+      std::function<void(SipMessage&, const std::shared_ptr<UserProfile>&)>& getMessagePostCreationCallback() { return mMessagePostCreationCallback; }
+
+      void setContactOverrideCallback(std::function<void(NameAddr&, const std::shared_ptr<UserProfile>&)> callback) { mContactOverrideCallback = callback; }
+      std::function<void(NameAddr&, const std::shared_ptr<UserProfile>&)>& getContactOverrideCallback() { return mContactOverrideCallback; }
+
    protected:
+      std::function<void(SipMessage&, const std::shared_ptr<UserProfile>&)> mMessagePostCreationCallback;
+      std::function<void(NameAddr&, const std::shared_ptr<UserProfile>&)> mContactOverrideCallback;
+      
       virtual void onAllHandlesDestroyed();      
       //TransactionUser virtuals
       virtual const Data& name() const;
@@ -382,7 +392,7 @@ class DialogUsageManager : public HandleManager, public TransactionUser
       typedef std::map<Data, DumFeatureChain*> FeatureChainMap;
       FeatureChainMap mIncomingFeatureChainMap;
       FeatureChainMap mOutgoingFeatureChainMap;
-  
+
    private:     
       friend class Dialog;
       friend class DialogSet;

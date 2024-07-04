@@ -92,11 +92,19 @@ BaseCreator::makeInitialRequest(const NameAddr& target, const NameAddr& from, Me
    if (!mUserProfile->isAnonymous() && mUserProfile->hasPublicGruu() && method != REGISTER) //why not use GRUU for publish/etc?
    {
       contact.uri() = mUserProfile->getPublicGruu();
+      if (mDum.getContactOverrideCallback())
+      {
+         mDum.getContactOverrideCallback()(contact, mUserProfile);
+      }
       mLastRequest->header(h_Contacts).push_front(contact);
    }
    else if(mUserProfile->isAnonymous() && mUserProfile->hasTempGruu() && method != REGISTER)
    {
       contact.uri() = mUserProfile->getTempGruu();
+      if (mDum.getContactOverrideCallback())
+      {
+         mDum.getContactOverrideCallback()(contact, mUserProfile);
+      }
       mLastRequest->header(h_Contacts).push_front(contact);
    }
    else
@@ -115,6 +123,12 @@ BaseCreator::makeInitialRequest(const NameAddr& target, const NameAddr& from, Me
       {
          contact.param(p_Instance) = instanceId;
       }
+
+      if (mDum.getContactOverrideCallback())
+      {
+         mDum.getContactOverrideCallback()(contact, mUserProfile);
+      }
+      
       mLastRequest->header(h_Contacts).push_front(contact);
 
       //if (method != REGISTER)
@@ -143,6 +157,12 @@ BaseCreator::makeInitialRequest(const NameAddr& target, const NameAddr& from, Me
    mLastRequest->mergeUri(target.uri());
 
    //DumHelper::setOutgoingEncryptionLevel(mLastRequest, mEncryptionLevel);
+
+   // Call the post creation callback if it is set
+   if (mDum.getMessagePostCreationCallback())
+   {
+      mDum.getMessagePostCreationCallback()(*mLastRequest, mUserProfile);
+   }
 
    DebugLog ( << "BaseCreator::makeInitialRequest: " << std::endl << std::endl << *mLastRequest);
 }
