@@ -321,6 +321,11 @@ ClientRegistration::internalRequestRefresh(uint32_t expires)
    }
    mLastRequest->header(h_Expires).value()=mRegistrationTime;
 
+   if (mDum.getOnPostRefreshRequiredCallback())
+   {
+      mDum.getOnPostRefreshRequiredCallback()(expires, *mLastRequest, mDialogSet.getUserProfile());
+   }
+
    send(mLastRequest);
 }
 

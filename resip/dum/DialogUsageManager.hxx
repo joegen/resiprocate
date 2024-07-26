@@ -375,9 +375,13 @@ class DialogUsageManager : public HandleManager, public TransactionUser
       void setContactOverrideCallback(std::function<void(NameAddr&, const std::shared_ptr<UserProfile>&)> callback) { mContactOverrideCallback = callback; }
       std::function<void(NameAddr&, const std::shared_ptr<UserProfile>&)>& getContactOverrideCallback() { return mContactOverrideCallback; }
 
+      void setOnPostRefreshRequiredCallback(std::function<void(uint32_t, SipMessage&, const std::shared_ptr<UserProfile>&)> callback) { mOnPostRefreshRequiredCallback = callback; }
+      std::function<void(uint32_t, SipMessage&, const std::shared_ptr<UserProfile>&)>& getOnPostRefreshRequiredCallback() { return mOnPostRefreshRequiredCallback; }
+
    protected:
       std::function<void(SipMessage&, const std::shared_ptr<UserProfile>&)> mMessagePostCreationCallback;
       std::function<void(NameAddr&, const std::shared_ptr<UserProfile>&)> mContactOverrideCallback;
+      std::function<void(uint32_t, SipMessage& , const std::shared_ptr<UserProfile>&)> mOnPostRefreshRequiredCallback;
       
       virtual void onAllHandlesDestroyed();      
       //TransactionUser virtuals
