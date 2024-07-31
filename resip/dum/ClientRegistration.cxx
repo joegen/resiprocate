@@ -945,6 +945,11 @@ ClientRegistration::checkProfileRetry(const SipMessage& msg)
          // Use retry interval from error response
          retryInterval = msg.header(h_RetryAfter).value();
       }
+      else if (mDum.getOnCheckProfileRetryCallback())
+      {
+         mDum.getOnCheckProfileRetryCallback()(msg, mDialogSet.mUserProfile, retryInterval);
+         mDialogSet.mUserProfile->setIntProperty("last-retry-interval", retryInterval);
+      }
       mRefreshTime = 0;
       switch(mState)
       {

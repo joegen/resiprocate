@@ -378,10 +378,14 @@ class DialogUsageManager : public HandleManager, public TransactionUser
       void setOnPostRefreshRequiredCallback(std::function<void(uint32_t, SipMessage&, const std::shared_ptr<UserProfile>&)> callback) { mOnPostRefreshRequiredCallback = callback; }
       std::function<void(uint32_t, SipMessage&, const std::shared_ptr<UserProfile>&)>& getOnPostRefreshRequiredCallback() { return mOnPostRefreshRequiredCallback; }
 
+      void setOnCheckProfileRetryCallback(std::function<void(const SipMessage&, const std::shared_ptr<UserProfile>&, uint32_t&)> callback) { mOnCheckProfileRetryCallback = callback; }
+      std::function<void(const SipMessage&, const std::shared_ptr<UserProfile>&, uint32_t&)>& getOnCheckProfileRetryCallback() { return mOnCheckProfileRetryCallback; }
+
    protected:
       std::function<void(SipMessage&, const std::shared_ptr<UserProfile>&)> mMessagePostCreationCallback;
       std::function<void(NameAddr&, const std::shared_ptr<UserProfile>&)> mContactOverrideCallback;
       std::function<void(uint32_t, SipMessage& , const std::shared_ptr<UserProfile>&)> mOnPostRefreshRequiredCallback;
+      std::function<void(const SipMessage&, const std::shared_ptr<UserProfile>&, uint32_t&)> mOnCheckProfileRetryCallback;
       
       virtual void onAllHandlesDestroyed();      
       //TransactionUser virtuals
