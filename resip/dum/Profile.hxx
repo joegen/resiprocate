@@ -253,10 +253,12 @@ class Profile
       void setIntProperty(const std::string& name, int value) { mIntProperties[name] = value; }
       int getIntProperty(const std::string& name) const { return mIntProperties.at(name); }
       bool hasIntProperty(const std::string& name) const { return mIntProperties.find(name) != mIntProperties.end(); }
+      void removeIntProperty(const std::string& name) { mIntProperties.erase(name); }
 
       void setStringProperty(const std::string& name, const std::string& value) { mStringProperties[name] = value; }
       const std::string& getStringProperty(const std::string& name) const { return mStringProperties.at(name); }
       bool hasStringProperty(const std::string& name) const { return mStringProperties.find(name) != mStringProperties.end(); }
+      void removeStringProperty(const std::string& name) { mStringProperties.erase(name); }
    private:
       IntProperties mIntProperties;
       StringProperties mStringProperties;
