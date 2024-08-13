@@ -55,17 +55,17 @@ NonDialogUsage::send(std::shared_ptr<SipMessage> msg)
 
    if (!sRoute.empty())
    {
-      if (msg->header(h_RequestLine).method() == REGISTER)
-      {
-         const NameAddrs emptyRoute;         
-         msg->remove(h_Routes);
-         getUserProfile()->setServiceRoute(emptyRoute);
-      }
-      else
-      {
+      //if (msg->header(h_RequestLine).method() == REGISTER)
+      //{
+      //   const NameAddrs emptyRoute;         
+      //   msg->remove(h_Routes);
+      //   getUserProfile()->setServiceRoute(emptyRoute);
+      //}
+      //else
+      //{
          InfoLog(<< "Applying service route: " << Inserter(getUserProfile()->getServiceRoute()) << " to " << msg->brief());   
          msg->header(h_Routes) = sRoute;
-      }
+      //}
    }
    
    mDum.send(std::move(msg));
