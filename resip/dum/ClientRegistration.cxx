@@ -642,6 +642,7 @@ ClientRegistration::dispatch(const SipMessage& msg)
                   return;
                }
             }
+#ifdef ENABLE_DELAYED_REQUEST_RETRY
             else if (code == 408 || (code == 503 && !msg.isFromWire()))
             {
                int retry = mDum.mClientRegistrationHandler->onRequestRetry(getHandle(), 0, msg);
@@ -684,6 +685,7 @@ ClientRegistration::dispatch(const SipMessage& msg)
                   return;
                }
             }
+#endif
          }
          
          mDum.mClientRegistrationHandler->onFailure(getHandle(), msg);
