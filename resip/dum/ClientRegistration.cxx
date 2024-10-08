@@ -847,18 +847,18 @@ ClientRegistration::calculateExpiry(const SipMessage& reg200) const
    // expiry: "...
    unsigned long reasonableExpiry = 0xFFFFFFFF;
 
+   bool foundMyContact = false;
    for(NameAddrs::const_iterator c=contacts.begin();c!=contacts.end();++c)
    {
       // Our expiry is never going to increase if we find one of our contacts, 
       // so if the expiry is not lower, we just ignore it. For registrars that
       // leave our requested expiry alone, this code ends up being pretty quick,
       // especially if there aren't contacts from other endpoints laying around.     
-      if(c->isWellFormed() && c->exists(p_expires))
+      if(c->isWellFormed() && c->exists(p_expires) && (contacts.size() == 1 || contactIsMine(*c)))
       {
+         foundMyContact = true;
          const unsigned long contactExpires = c->param(p_expires);
-         if((contactExpires < expiry ||
-             contactExpires < reasonableExpiry) &&
-            contactIsMine(*c))
+         if((contactExpires < expiry || contactExpires < reasonableExpiry))
          {
             expiry = contactExpires;
             if(contactExpires >= UnreasonablyLowExpirationThreshold)
@@ -868,6 +868,29 @@ ClientRegistration::calculateExpiry(const SipMessage& reg200) const
          }
       }
    }
+
+   // There must be multiple contacts and none of them are ours.
+   // This is a very strange case, but we should handle it gracefully.
+   // We will use the top-most contact with extreme prejudice!
+   if (!foundMyContact && !contacts.empty())
+   {
+      NameAddrs::const_iterator c=contacts.begin();
+      if(c->isWellFormed() && c->exists(p_expires))
+      {
+         foundMyContact = true;
+         const unsigned long contactExpires = c->param(p_expires);
+         if((contactExpires < expiry || contactExpires < reasonableExpiry))
+         {
+            expiry = contactExpires;
+            if(contactExpires >= UnreasonablyLowExpirationThreshold)
+            {
+                reasonableExpiry = contactExpires;
+            }
+         }
+      }
+   }
+
+
    // If expiry is less than UnreasonablyLowExpirationThreshold and we have another
    // contact that has a reasonable expiry value, then return that value instead.
    // See large comment above for more details.
