@@ -23,7 +23,7 @@
 
 using namespace resip;
 
-static const uint32_t UnreasonablyLowExpirationThreshold = 7;  // The threshold before which we consider a contacts expiry to be unreasonably low
+static const uint32_t UnreasonablyLowExpirationThreshold = 1;  // The threshold before which we consider a contacts expiry to be unreasonably low
 
 ClientRegistrationHandle
 ClientRegistration::getHandle()
