@@ -28,6 +28,7 @@ class ClientSubscription: public BaseSubscription
       void acceptUpdate(int statusCode = 200, const char* reason = nullptr);
       void rejectUpdate(int statusCode = 400, const Data& reasonPhrase = Data::Empty);
       void requestRefresh(uint32_t expires = 0);  // 0 defaults to using original expires value (to remove call end() instead)
+      void requestRefresh(const std::string& contentType, const std::string& contentSubtype, const std::string&  content, uint32_t expires = 0);  // 0 defaults to using original expires value (to remove call end() instead)
       void end() override;
       void end(bool immediate); // If immediate is true then usage is destroyed with no further messaging
       virtual void reSubscribe();  // forms a new Subscription dialog - reusing the same target and AppDialogSet      

@@ -11,6 +11,7 @@
 #include "resip/dum/SubscriptionCreator.hxx"
 #include "resip/dum/UsageUseException.hxx"
 #include "resip/dum/MasterProfile.hxx"
+#include "resip/stack/GenericContents.hxx"
 
 #include "resip/dum/AppDialogSet.hxx"
 
@@ -510,6 +511,12 @@ ClientSubscription::dispatch(const DumTimeout& timer)
 void
 ClientSubscription::requestRefresh(uint32_t expires)
 {
+   requestRefresh("", "", "", expires);
+}
+
+void 
+ClientSubscription::requestRefresh(const std::string& contentType, const std::string& contentSubtype, const std::string&  content, uint32_t expires)
+{
    if (!mEnded)
    {
       if (mRefreshing)
@@ -531,6 +538,17 @@ ClientSubscription::requestRefresh(uint32_t expires)
       InfoLog (<< "Refresh subscription: " << mLastRequest->header(h_Contacts).front());
       mRefreshing = true;
       mLastSubSecs = Timer::getTimeSecs();
+
+      if (!contentType.empty() && !contentSubtype.empty() && !content.empty())
+      {
+         resip::Data body(content.c_str());
+         resip::Data type(contentType.c_str());
+         resip::Data subType(contentSubtype.c_str());
+         resip::Mime mime(type, subType);
+         std::unique_ptr<resip::Contents> gcontent(new resip::PlainContents(body, mime));
+         mLastRequest->setContents(std::move(gcontent));
+      }
+
       send(mLastRequest);
       // Timer for reSUB NOTIFY.
       mDum.addTimerMs(DumTimeout::WaitForNotify, 
