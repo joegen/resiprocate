@@ -109,7 +109,7 @@ ClientSubscription::dispatch(const SipMessage& msg)
          // If not out of order, then allow NOTIFY to do a target refresh - RFC6665
          if (msg.exists(h_Contacts))
          {
-             mDialog.mRemoteTarget = msg.header(h_Contacts).front();
+            //  mDialog.mRemoteTarget = msg.header(h_Contacts).front();
          }
       }
       else
